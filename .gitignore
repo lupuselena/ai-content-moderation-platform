@@ -1,0 +1,30 @@
+# Node
+node_modules/
+dist/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Java / Maven
+target/
+*.class
+
+# Environment variables
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker / database
+postgres-data/
+
+# Logs
+*.log
