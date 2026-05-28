@@ -32,3 +32,6 @@ postgres-data/
 
 # Logs
 *.log
+
+*_files/
+saved_resource*
