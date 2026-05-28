@@ -27,25 +27,43 @@ def health():
 
 @app.post("/api/moderate")
 def moderate_text(payload: dict):
-
     text = payload.get("text", "")
 
-    response = client.moderations.create(
-        model="omni-moderation-latest",
-        input=text
-    )
+    try:
+        response = client.moderations.create(
+            model="omni-moderation-latest",
+            input=text
+        )
 
-    flagged = response.results[0].flagged
+        flagged = response.results[0].flagged
 
-    if flagged:
+        if flagged:
+            return {
+                "status": "BLOCKED",
+                "provider": "OpenAI"
+            }
+
         return {
-            "status": "BLOCKED"
+            "status": "APPROVED",
+            "provider": "OpenAI"
         }
 
-    return {
-        "status": "APPROVED"
-    }
+    except Exception as e:
+        toxic_words = ["hate", "hurt", "kill", "attack"]
 
+        if any(word in text.lower() for word in toxic_words):
+            return {
+                "status": "BLOCKED",
+                "provider": "Local fallback",
+                "reason": "OpenAI unavailable or rate limited"
+            }
+
+        return {
+            "status": "APPROVED",
+            "provider": "Local fallback",
+            "reason": "OpenAI unavailable or rate limited"
+        }
+    
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
