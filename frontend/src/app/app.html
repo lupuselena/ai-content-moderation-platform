@@ -1,0 +1,51 @@
+<div class="container">
+  <h1>🛡️ AI Content Moderation Platform</h1>
+  <p class="subtitle">
+    Cloud-native microservices platform for AI-powered content moderation.
+  </p>
+  <div class="card">
+    <h2>Create Post</h2>
+
+    <textarea
+      [(ngModel)]="text"
+      placeholder="Write a post..."
+      rows="4"
+    ></textarea>
+
+    <button (click)="createPost()" [disabled]="loading">
+      {{ loading ? 'Moderating...' : 'Submit Post' }}
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>Moderated Posts</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Text</th>
+          <th>Status</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let post of posts()">
+          <td>{{ post.id }}</td>
+          <td>{{ post.text }}</td>
+          <td>
+            <span
+              class="badge"
+              [class.approved]="post.moderationStatus === 'APPROVED'"
+              [class.blocked]="post.moderationStatus === 'BLOCKED'"
+            >
+              {{ post.moderationStatus }}
+            </span>
+          </td>
+          <td>{{ post.createdAt | date:'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
