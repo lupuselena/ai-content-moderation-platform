@@ -24,7 +24,7 @@ The system is designed with scalability, modularity, and cloud deployment in min
 # Architecture
 
 ```text
-Client / Frontend
+Angular Frontend
         |
         v
 API Gateway - Spring Cloud Gateway
@@ -54,6 +54,7 @@ PostgreSQL
 | Moderation Service | FastAPI / Python            |
 | Database           | PostgreSQL                  |
 | ORM                | Prisma                      |
+| Frontend           | Angular                     |
 | AI Moderation      | OpenAI API + Local Fallback |
 | Containerization   | Docker                      |
 | Orchestration      | Docker Compose              |
@@ -207,7 +208,6 @@ This ensures:
 * AWS RDS PostgreSQL
 * AWS Cognito authentication
 * AWS CodePipeline CI/CD
-* Angular frontend dashboard
 * Advanced RBAC authorization
 * RabbitMQ event-driven architecture
 * Observability and monitoring
@@ -215,6 +215,36 @@ This ensures:
 * Kubernetes deployment
 
 ---
+
+## Screenshots
+
+### Angular Dashboard
+
+![Angular Dashboard](docs/screenshots/angular.png)
+
+### Eureka Discovery
+
+![Eureka](docs/screenshots/eureka.png)
+
+### FastAPI Swagger
+
+![Swagger](docs/screenshots/swagger.png)
+
+### Docker Containers
+
+![Docker](docs/screenshots/docker.png)
+
+
+# Demo Scenario
+
+1. User creates a post using the Angular dashboard.
+2. Request is sent through the API Gateway.
+3. Content Service receives the request.
+4. Moderation Service analyzes the content.
+5. The moderation result is returned.
+6. The post is stored in PostgreSQL.
+7. The user sees the moderation result in the dashboard.
+
 
 # Author
 Lupu Elena
