@@ -1,18 +1,40 @@
 <div class="container">
-  <h1>🛡️ AI Content Moderation Platform</h1>
-  <p class="subtitle">
-    Cloud-native microservices platform for AI-powered content moderation.
-  </p>
+  <div class="top-bar">
+    <div class="brand">
+      <div class="logo">🛡️</div>
+      <div>
+        <div class="title">CyberSec AI Platform</div>
+        <div class="subtitle-small">
+          AI-powered content moderation with Spring Cloud & AWS
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-actions">
+      <button *ngIf="!isAuthenticated()" class="login-btn" (click)="login()">
+        Login
+      </button>
+
+      <button *ngIf="isAuthenticated()" class="logout-btn" (click)="logout()">
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
   <div class="card">
     <h2>Create Post</h2>
 
     <textarea
       [(ngModel)]="text"
-      placeholder="Write a post..."
+      placeholder="Write a post to be moderated by AI..."
       rows="4"
     ></textarea>
 
-    <button (click)="createPost()" [disabled]="loading">
+    <button class="submit-btn" (click)="createPost()" [disabled]="loading || !isAuthenticated()">
       {{ loading ? 'Moderating...' : 'Submit Post' }}
     </button>
   </div>

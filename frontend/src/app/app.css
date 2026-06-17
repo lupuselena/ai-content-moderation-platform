@@ -4,108 +4,180 @@
 
 body {
   margin: 0;
-  background: #f5f7fb;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 40%, #ffffff 100%);
   font-family: Inter, Arial, sans-serif;
 }
 
 .container {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 0 20px;
+  max-width: 1300px;
+  margin: 30px auto;
+  padding: 0 24px;
 }
 
-h1 {
-  font-size: 36px;
-  margin-bottom: 8px;
-  color: #1f2937;
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 18px 22px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(10px);
 }
 
-.subtitle {
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  font-size: 38px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.subtitle-small {
+  margin-top: 4px;
+  font-size: 13px;
   color: #6b7280;
-  margin-bottom: 30px;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.login-btn,
+.submit-btn {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
+}
+
+.login-btn:hover,
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.35);
+}
+
+.logout-btn {
+  background: #dc2626;
+  color: white;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.22);
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.error {
+  margin: 16px 0 24px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  border: 1px solid #f59e0b;
 }
 
 .card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 26px;
   margin-bottom: 24px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
   box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.06),
-    0 2px 6px rgba(0, 0, 0, 0.04);
+    0 20px 40px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
 .card h2 {
   margin-top: 0;
+  margin-bottom: 18px;
   color: #111827;
+  font-size: 22px;
 }
 
 textarea {
   width: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 15px;
-  resize: vertical;
   min-height: 120px;
   margin-bottom: 16px;
+  padding: 15px;
+  resize: vertical;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #f9fafb;
+  color: #111827;
 }
 
 textarea:focus {
   outline: none;
   border-color: #2563eb;
-}
-
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 12px 22px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover {
-  background: #1d4ed8;
-}
-
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 14px;
 }
 
 thead {
-  background: #f9fafb;
+  background: #eef2ff;
 }
 
 th {
   text-align: left;
-  padding: 14px;
+  padding: 15px;
   color: #374151;
+  font-size: 14px;
 }
 
 td {
-  padding: 14px;
+  padding: 15px;
   border-top: 1px solid #e5e7eb;
+  color: #374151;
 }
 
 tr:hover {
-  background: #fafafa;
+  background: #f8fafc;
 }
 
 .badge {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.3px;
 }
 
 .approved {
@@ -116,4 +188,25 @@ tr:hover {
 .blocked {
   background: #fee2e2;
   color: #991b1b;
+}
+
+@media (max-width: 700px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .auth-actions {
+    width: 100%;
+  }
+
+  .login-btn,
+  .logout-btn {
+    width: 100%;
+  }
+
+  table {
+    font-size: 13px;
+  }
 }

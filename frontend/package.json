@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start:local": "ng serve --proxy-config proxy.local.conf.json",
+    "start:aws": "ng serve --proxy-config proxy.aws.conf.json"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

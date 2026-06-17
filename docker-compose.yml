@@ -27,12 +27,19 @@ services:
   api-gateway:
     build:
       context: ./api-gateway
-
     ports:
       - "8080:8080"
-
+    environment:
+      EUREKA_URL: http://discovery-service:8761/eureka/
+      CONTENT_SERVICE_URL: http://content-service:3000
+      MODERATION_SERVICE_URL: http://moderation-service:8000
+      COGNITO_CLIENT_ID: 64c81glsepuvt32pe836aaqeak
+      COGNITO_CLIENT_SECRET: 737d3qp2bglqkede36fdat29isqfic1jfvineeu37ng17q55nkh
+      COGNITO_TOKEN_URI: https://us-east-1w9ujratat.auth.us-east-1.amazoncognito.com/oauth2/token
     depends_on:
       - discovery-service
+      - content-service
+      - moderation-service
 
   moderation-service:
     build:
