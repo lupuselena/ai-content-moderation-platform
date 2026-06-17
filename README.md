@@ -1,252 +1,183 @@
-# AI-Powered Secure Content Moderation Platform
+# AI Content Moderation Platform
 
-Cloud-native polyglot microservices platform for AI-powered text moderation.
+## Overview
+
+AI Content Moderation Platform is a cloud-native microservices application designed to demonstrate secure content moderation using modern software architecture principles.
+
+The platform allows authenticated users to create posts, stores them in a PostgreSQL database, and uses an AI moderation service to classify content before displaying it to users.
+
+The solution follows microservices principles and is deployed in AWS using Docker containers and Amazon ECS.
 
 ---
 
-# Overview
+## Architecture
 
-This project is a cloud-native distributed moderation platform built using a microservices architecture.
-The system analyzes user-generated text content using AI moderation and stores moderation results in PostgreSQL.
+The platform consists of the following components:
 
-The platform combines multiple technologies and programming languages:
+* Angular Frontend
+* AWS Cognito (External IAM)
+* Spring Cloud Gateway
+* Eureka Service Discovery
+* Content Service
+* Moderation Service
+* PostgreSQL Database (AWS RDS)
 
-* Java / Spring Boot
-* NestJS / Node.js
-* Python / FastAPI
+### Authentication Flow
+
+1. User clicks Login.
+2. User authenticates through AWS Cognito.
+3. Cognito returns an Authorization Code.
+4. API Gateway exchanges the code for a JWT token.
+5. Angular stores the JWT.
+6. Requests include the JWT in the Authorization header.
+7. Spring Security validates the token.
+
+---
+
+## Technologies
+
+### Backend
+
+* Java 21
+* Spring Boot
+* Spring Cloud Gateway
+* Spring Security
+* Spring Cloud Netflix Eureka
+* Spring Data JPA
+
+### Frontend
+
+* Angular
+* TypeScript
+
+### Database
+
 * PostgreSQL
+* AWS RDS
+
+### Cloud
+
+* AWS ECS
+* AWS ECR
+* AWS Cognito
+
+### Containerization
+
+* Docker
 * Docker Compose
 
-The system is designed with scalability, modularity, and cloud deployment in mind.
+---
+
+## Microservices
+
+### Eureka Discovery Service
+
+Responsible for service registration and discovery.
+
+Port:
+
+8761
+
+### API Gateway
+
+Single entry point for all backend services.
+
+Responsibilities:
+
+* Routing
+* Authentication
+* Authorization
+* Token exchange
+
+Port:
+
+8080
+
+### Content Service
+
+Responsible for:
+
+* Creating posts
+* Reading posts
+* Database persistence
+
+Port:
+
+3000
+
+### Moderation Service
+
+Responsible for:
+
+* AI moderation
+* Content classification
+* Approval / blocking decisions
+
+Port:
+
+8000
 
 ---
 
-# Architecture
+## Security
 
-```text
-Angular Frontend
-        |
-        v
-API Gateway - Spring Cloud Gateway
-        |
-        v
-Content Service - NestJS
-        |
-        v
-Moderation Service - FastAPI
-        |
-        v
-OpenAI API / Local Fallback
-        |
-        v
-PostgreSQL
-```
+Authentication is implemented using AWS Cognito.
+
+Features:
+
+* OAuth2 Authorization Code Flow
+* JWT Access Tokens
+* External IAM
+* Spring Security Resource Server
+
+Protected endpoints:
+
+* GET /api/v1/posts
+* POST /api/v1/posts
+* POST /api/moderate
 
 ---
 
-# Technologies
+## AWS Deployment
 
-| Component          | Technology                  |
-| ------------------ | --------------------------- |
-| Discovery Service  | Spring Boot Eureka          |
-| API Gateway        | Spring Cloud Gateway        |
-| Content Service    | NestJS / Node.js            |
-| Moderation Service | FastAPI / Python            |
-| Database           | PostgreSQL                  |
-| ORM                | Prisma                      |
-| Frontend           | Angular                     |
-| AI Moderation      | OpenAI API + Local Fallback |
-| Containerization   | Docker                      |
-| Orchestration      | Docker Compose              |
+Services are deployed using Amazon ECS.
+
+Container images are stored in Amazon ECR.
+
+Database is hosted in Amazon RDS PostgreSQL.
+
+Security Groups are used to control network access.
 
 ---
 
-# Features
+## Running Locally
 
-* Cloud-native microservices architecture
-* API Gateway routing
-* Eureka service discovery
-* AI-powered text moderation
-* Local fallback moderation system
-* PostgreSQL persistence
-* Dockerized infrastructure
-* API versioning
-* Swagger documentation
-* Polyglot architecture
+### Backend
 
----
-
-# Microservices
-
-| Service                  | Port |
-| ------------------------ | ---- |
-| Eureka Discovery Service | 8761 |
-| API Gateway              | 8080 |
-| Content Service          | 3000 |
-| Moderation Service       | 8000 |
-| PostgreSQL               | 5432 |
-
----
-
-# Project Structure
-
-```text
-ai-content-moderation-platform/
-│
-├── api-gateway/
-├── content-service/
-├── moderation-service/
-├── discovery-service/
-├── docker-compose.yml
-├── README.md
-└── architecture.md
-```
-
----
-
-# Docker Setup
-
-## Run all services
-
-```bash
 docker compose up --build
-```
 
-## Stop all services
+### Frontend
 
-```bash
-docker compose down
-```
+npm install
 
----
-
-# Test URLs
-
-## Eureka Dashboard
-
-```text
-http://localhost:8761
-```
-
-## API Gateway
-
-```text
-http://localhost:8080/api/v1/posts
-```
-
-## Content Service Direct Access
-
-```text
-http://localhost:3000/api/v1/posts
-```
-
-## Moderation Service Swagger
-
-```text
-http://localhost:8000/docs
-```
+ng serve
 
 ---
 
-# Example API Request
+## Future Improvements
 
-## Create post
-
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/v1/posts" `
--Method POST `
--ContentType "application/json" `
--Body '{"text":"I hate everyone"}'
-```
+* HTTPS
+* Load Balancer
+* CI/CD Pipeline
+* AWS Secrets Manager
+* Internal-only Security Groups
+* CloudWatch Monitoring
 
 ---
 
-# Moderation Workflow
+## Author
+Elena Lupu
 
-1. User sends content through API Gateway.
-2. Gateway forwards request to Content Service.
-3. Content Service sends text to Moderation Service.
-4. Moderation Service analyzes content using:
+Cyber Security Project
 
-   * OpenAI Moderation API
-   * Local fallback moderation
-5. Moderation result is returned.
-6. Content Service stores the post and moderation result in PostgreSQL.
-7. Response is returned to the client.
-
----
-
-# Example Response
-
-```json
-{
-  "id": 1,
-  "text": "I hate everyone",
-  "moderationStatus": "BLOCKED",
-  "createdAt": "2026-05-28T09:00:00.000Z"
-}
-```
-
----
-
-# Local Fallback Moderation
-
-If the OpenAI API is unavailable or rate-limited, the system automatically switches to a local fallback moderation mechanism.
-
-This ensures:
-
-* High availability
-* Fault tolerance
-* Graceful degradation
-* Stable demonstrations without external API dependency
-
----
-
-# Future Improvements
-
-* AWS ECS/Fargate deployment
-* AWS RDS PostgreSQL
-* AWS Cognito authentication
-* AWS CodePipeline CI/CD
-* Advanced RBAC authorization
-* RabbitMQ event-driven architecture
-* Observability and monitoring
-* Distributed tracing
-* Kubernetes deployment
-
----
-
-## Screenshots
-
-### Angular Dashboard
-
-![Angular Dashboard](docs/screenshots/angular.png)
-
-### Eureka Discovery
-
-![Eureka](docs/screenshots/eureka.png)
-
-### FastAPI Swagger
-
-![Swagger](docs/screenshots/swagger.png)
-
-### Docker Containers
-
-![Docker](docs/screenshots/docker.png)
-
-
-# Demo Scenario
-
-1. User creates a post using the Angular dashboard.
-2. Request is sent through the API Gateway.
-3. Content Service receives the request.
-4. Moderation Service analyzes the content.
-5. The moderation result is returned.
-6. The post is stored in PostgreSQL.
-7. The user sees the moderation result in the dashboard.
-
-
-# Author
-Lupu Elena
-Master's Degree Project — Internet Technologies
-Cloud-Native AI Moderation Platform
+Internet Technologies Master's Program
