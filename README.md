@@ -1,183 +1,472 @@
 # AI Content Moderation Platform
 
-## Overview
+Cloud-native microservices platform for AI-powered content moderation, built with Spring Cloud, AWS ECS, AWS Cognito, PostgreSQL RDS, Docker and Angular.
 
-AI Content Moderation Platform is a cloud-native microservices application designed to demonstrate secure content moderation using modern software architecture principles.
+## 1. Project Overview
 
-The platform allows authenticated users to create posts, stores them in a PostgreSQL database, and uses an AI moderation service to classify content before displaying it to users.
+This project allows authenticated users to create posts. Each post is sent through an AI moderation flow and then stored in a PostgreSQL database.
 
-The solution follows microservices principles and is deployed in AWS using Docker containers and Amazon ECS.
+The project was adapted to meet the course requirements:
 
----
-
-## Architecture
-
-The platform consists of the following components:
-
-* Angular Frontend
-* AWS Cognito (External IAM)
-* Spring Cloud Gateway
-* Eureka Service Discovery
-* Content Service
-* Moderation Service
-* PostgreSQL Database (AWS RDS)
-
-### Authentication Flow
-
-1. User clicks Login.
-2. User authenticates through AWS Cognito.
-3. Cognito returns an Authorization Code.
-4. API Gateway exchanges the code for a JWT token.
-5. Angular stores the JWT.
-6. Requests include the JWT in the Authorization header.
-7. Spring Security validates the token.
-
----
-
-## Technologies
-
-### Backend
-
-* Java 21
-* Spring Boot
-* Spring Cloud Gateway
+* Spring Boot application with Spring Cloud dependencies
+* Microservices architecture
+* Eureka Discovery Server
+* API Gateway
+* PostgreSQL database
+* Docker images
+* AWS ECS deployment
 * Spring Security
-* Spring Cloud Netflix Eureka
-* Spring Data JPA
+* External IAM using AWS Cognito
+* AI-assisted content moderation
+* AI tools used for code generation, validation, vulnerability review and documentation
 
-### Frontend
+## 2. Architecture
+## 2.1 Architecture Diagram
 
-* Angular
-* TypeScript
+The following diagram illustrates the complete system architecture and communication flow between the frontend, AWS Cognito, Spring Cloud components, microservices and database.
 
-### Database
+![Architecture Diagram](docs/architecture-diagram.png)
 
-* PostgreSQL
-* AWS RDS
+The frontend communicates exclusively with the API Gateway. Authentication is delegated to AWS Cognito, which issues JWT tokens. The API Gateway validates JWT tokens using Spring Security before forwarding requests to the internal microservices. The Content Service persists data in PostgreSQL RDS, while Eureka provides service registration and discovery.
 
-### Cloud
+```text
+Angular Frontend
+        |
+        v
+AWS Cognito
+External IAM
+        |
+        v
+Spring Cloud API Gateway
+Spring Security + JWT
+        |
+   +----+----+
+   |         |
+   v         v
+Content   Moderation
+Service    Service
+   |
+   v
+PostgreSQL RDS
 
-* AWS ECS
-* AWS ECR
-* AWS Cognito
+Eureka Discovery Service
+```
 
-### Containerization
+## 3. Services
 
-* Docker
-* Docker Compose
+| Service            | Technology                         | Port | Purpose                               |
+| ------------------ | ---------------------------------- | ---: | ------------------------------------- |
+| Frontend           | Angular                            | 4200 | User interface                        |
+| API Gateway        | Spring Boot + Spring Cloud Gateway | 8080 | Single entry point, routing, security |
+| Discovery Service  | Spring Boot + Eureka               | 8761 | Service discovery                     |
+| Content Service    | NestJS / Node.js                   | 3000 | Post management                       |
+| Moderation Service | FastAPI / Python                   | 8000 | AI moderation                         |
+| Database           | PostgreSQL / AWS RDS               | 5432 | Persistent storage | 
 
----
+## 3.1 Screenshots
 
-## Microservices
+### Login Page
+
+Users authenticate through AWS Cognito before accessing protected resources.
+
+![Login](docs/screenshots/login.png)
+
+### Unauthenticated View
+
+When no JWT token is available, protected functionality is hidden and users are prompted to log in.
+
+![No Login](docs/screenshots/page-nologin.png)
+
+### Dashboard
+
+After successful authentication, users can view moderated posts and create new content.
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Posts Loaded
+
+Posts are retrieved through the secured API Gateway using JWT authentication.
+
+![Posts](docs/screenshots/load_posts.png)
+
+### AWS Cognito User Pool
+
+AWS Cognito is used as the external Identity and Access Management (IAM) solution required by the project specification.
+
+![Cognito](docs/screenshots/cognito-userpool.png)
 
 ### Eureka Discovery Service
 
-Responsible for service registration and discovery.
+All backend services register with Eureka for service discovery.
 
-Port:
+![Eureka](docs/screenshots/eureka.png)
 
-8761
+### Amazon ECS Services
 
-### API Gateway
+Microservices are deployed and managed through Amazon ECS.
 
-Single entry point for all backend services.
+![ECS](docs/screenshots/ecs-services.png)
 
-Responsibilities:
+### Amazon ECR
 
-* Routing
-* Authentication
-* Authorization
-* Token exchange
+Docker container images are stored in Amazon Elastic Container Registry.
 
-Port:
+![ECR](docs/screenshots/ecr.png)
 
-8080
+### PostgreSQL Database (AWS RDS)
 
-### Content Service
+Persistent application data is stored in PostgreSQL hosted in Amazon RDS.
 
-Responsible for:
+![RDS](docs/screenshots/rds-db.png)
 
-* Creating posts
-* Reading posts
-* Database persistence
+### Docker Images
 
-Port:
+Containerized services used for local development and AWS deployment.
 
-3000
+![Docker](docs/screenshots/docker.png)                  
 
-### Moderation Service
+## 4. Authentication
 
-Responsible for:
+Authentication is implemented with AWS Cognito.
 
-* AI moderation
-* Content classification
-* Approval / blocking decisions
+Flow:
 
-Port:
-
-8000
-
----
-
-## Security
-
-Authentication is implemented using AWS Cognito.
-
-Features:
-
-* OAuth2 Authorization Code Flow
-* JWT Access Tokens
-* External IAM
-* Spring Security Resource Server
+```text
+User clicks Login
+        |
+        v
+AWS Cognito Login Page
+        |
+        v
+Authorization Code returned to Angular
+        |
+        v
+Angular sends code to /auth/token
+        |
+        v
+API Gateway exchanges code for JWT
+        |
+        v
+Angular stores access_token
+        |
+        v
+Requests are sent with Authorization: Bearer <token>
+```
 
 Protected endpoints:
 
-* GET /api/v1/posts
-* POST /api/v1/posts
-* POST /api/moderate
+```text
+GET  /api/v1/posts
+POST /api/v1/posts
+POST /api/moderate
+```
 
----
+Public endpoint:
 
-## AWS Deployment
+```text
+POST /auth/token
+```
 
-Services are deployed using Amazon ECS.
+## 5. Test User
 
-Container images are stored in Amazon ECR.
+For demo/testing:
 
-Database is hosted in Amazon RDS PostgreSQL.
+```text
+Username / Email: test@cybersec.local
+Password: CyberSec123!
+```
 
-Security Groups are used to control network access.
+This user is created in AWS Cognito.
 
----
+## 6. Run Locally
 
-## Running Locally
+Start backend services:
 
-### Backend
-
+```bash
 docker compose up --build
+```
 
-### Frontend
+Start frontend locally:
 
-npm install
+```bash
+cd frontend
+npm run start:local
+```
 
-ng serve
+or:
 
----
+```bash
+ng serve --proxy-config proxy.local.conf.json
+```
 
-## Future Improvements
+Open:
 
-* HTTPS
-* Load Balancer
-* CI/CD Pipeline
-* AWS Secrets Manager
-* Internal-only Security Groups
-* CloudWatch Monitoring
+```text
+http://localhost:4200
+```
 
----
+Local test URLs:
 
-## Author
-Elena Lupu
+```text
+Eureka:
+http://localhost:8761
 
-Cyber Security Project
+Gateway protected posts endpoint:
+http://localhost:8080/api/v1/posts
 
-Internet Technologies Master's Program
+Moderation endpoint:
+http://localhost:8080/api/moderate
+```
+
+Expected behavior:
+
+* `http://localhost:8761` opens Eureka dashboard.
+* `http://localhost:8080/api/v1/posts` returns `401 Unauthorized` without login.
+* After login through Cognito, the Angular app displays the list of posts.
+* Creating a post works only after authentication.
+
+## 7. Run Frontend Against AWS Backend
+
+Start frontend using AWS proxy:
+
+```bash
+cd frontend
+npm run start:aws
+```
+
+or:
+
+```bash
+ng serve --proxy-config proxy.aws.conf.json
+```
+
+Open:
+
+```text
+http://localhost:4200
+```
+
+Current AWS Gateway URL used in proxy:
+
+```text
+http://<API_GATEWAY_PUBLIC_IP>:8080
+```
+
+AWS test URLs:
+
+```text
+API Gateway:
+http://<API_GATEWAY_PUBLIC_IP>:8080/api/v1/posts
+
+Auth token endpoint:
+http://<API_GATEWAY_PUBLIC_IP>:8080/auth/token
+
+Eureka:
+http://<EUREKA_PUBLIC_IP>:8761
+```
+
+Expected behavior:
+
+* `/api/v1/posts` returns `401 Unauthorized` without a JWT.
+* `/auth/token` should not return `404`; with GET it may return `405 Method Not Allowed` because it expects POST.
+* Login from the Angular UI redirects to Cognito.
+* After login, posts are displayed.
+* Submit Post creates a new post.
+* Logout clears the session and redirects through Cognito logout.
+
+## 8. Proxy Configuration
+
+### Local proxy
+
+`frontend/proxy.local.conf.json`
+
+```json
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/auth": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+```
+
+### AWS proxy
+
+`frontend/proxy.aws.conf.json`
+
+```json
+{
+  "/api": {
+    "target": "http://<API_GATEWAY_PUBLIC_IP>:8080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/auth": {
+    "target": "http://<API_GATEWAY_PUBLIC_IP>:8080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+```
+
+If the ECS task is redeployed, the public IP may change. In that case, update `proxy.aws.conf.json`.
+
+## 9. Important AWS Environment Variables
+
+The API Gateway uses environment variables instead of hardcoded service URLs.
+
+Required ECS environment variables for `api-gateway`:
+
+```text
+EUREKA_URL=http://172.31.17.107:8761/eureka/
+CONTENT_SERVICE_URL=http://172.31.6.226:3000
+MODERATION_SERVICE_URL=http://172.31.27.12:8000
+COGNITO_CLIENT_ID=64c81glsepuvt32pe836aaqeak
+COGNITO_CLIENT_SECRET=<stored in ECS environment variables>
+COGNITO_TOKEN_URI=https://us-east-1w9ujratat.auth.us-east-1.amazoncognito.com/oauth2/token
+```
+
+The client secret must not be committed to GitHub.
+
+## 10. Build and Push API Gateway to AWS ECR
+
+Build API Gateway image:
+
+```bash
+docker compose build api-gateway
+```
+
+Tag image:
+
+```bash
+docker tag ai-content-moderation-platform-api-gateway:latest 192469111098.dkr.ecr.us-east-1.amazonaws.com/api-gateway:latest
+```
+
+Login to ECR:
+
+```bash
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 192469111098.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Push image:
+
+```bash
+docker push 192469111098.dkr.ecr.us-east-1.amazonaws.com/api-gateway:latest
+```
+
+Then in AWS ECS:
+
+```text
+ECS → Cluster → api-gateway service → Force new deployment
+```
+
+After deployment, copy the new public IP and update `frontend/proxy.aws.conf.json`.
+
+## 11. Git Commands
+
+Check changes:
+
+```bash
+git status
+```
+
+Add all changes:
+
+```bash
+git add .
+```
+
+Commit:
+
+```bash
+git commit -m "Add Cognito authentication, AWS deployment config and documentation"
+```
+
+Push:
+
+```bash
+git push
+```
+
+## 12. AWS Security Notes
+
+During development and testing, some security groups may allow public access using:
+
+```text
+0.0.0.0/0
+```
+
+For a production-ready setup, the recommended configuration is:
+
+| Component          | Recommended Inbound Rule                           |
+| ------------------ | -------------------------------------------------- |
+| API Gateway        | Port 8080 from 0.0.0.0/0                           |
+| Eureka             | Port 8761 only from developer IP or internal VPC   |
+| Content Service    | Port 3000 only from API Gateway Security Group     |
+| Moderation Service | Port 8000 only from API Gateway Security Group     |
+| PostgreSQL RDS     | Port 5432 only from Content Service Security Group |
+
+## 13. Demo Checklist
+
+Before presentation, verify:
+
+```text
+1. Start frontend with npm run start:aws
+2. Open http://localhost:4200
+3. Click Login
+4. Authenticate with Cognito
+5. Verify post list appears
+6. Submit a new post
+7. Verify the post appears in the table
+8. Click Logout
+9. Verify the user is redirected/logout state is cleared
+10. Open Eureka dashboard
+11. Show ECS services running
+12. Show Cognito User Pool
+```
+
+## 14. AI-Assisted Development
+
+AI-assisted development practices were used throughout the project lifecycle for implementation, debugging, testing and documentation.
+
+AI support was used for:
+
+- Spring Security configuration
+- AWS Cognito OAuth2 integration
+- JWT validation troubleshooting
+- Docker and AWS deployment troubleshooting
+- ECS and ECR deployment validation
+- Environment variable management
+- Frontend authentication flow implementation
+- Architecture documentation generation
+- Security review and recommendations
+- Presentation and project documentation preparation
+
+All generated solutions were manually reviewed, tested and integrated into the final implementation.
+
+## 15. Course Requirements Mapping
+
+| Requirement | Status |
+|------------|---------|
+| Spring Boot Application | ✅ |
+| Spring Cloud | ✅ |
+| Eureka Discovery Service | ✅ |
+| API Gateway | ✅ |
+| Database | ✅ PostgreSQL RDS |
+| Docker Images | ✅ |
+| Docker Compose | ✅ |
+| Spring Security | ✅ |
+| External IAM | ✅ AWS Cognito |
+| AWS Deployment | ✅ Amazon ECS |
+| AI-based Content Moderation | ✅ |
+
+## 16. Conclusion
+
+The project demonstrates a secure microservices architecture using Spring Cloud, Eureka, API Gateway, AWS Cognito, PostgreSQL RDS, Docker and AWS ECS.
+
+It implements authentication with an external IAM system, protects backend routes using JWT validation, and provides an AI-powered content moderation workflow.
